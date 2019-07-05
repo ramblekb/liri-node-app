@@ -1,15 +1,32 @@
-// add code to read and set any environment variables with the dotenv package:
 require("dotenv").config();
+var keys = require("./keys.js");
+var Spotify = require('node-spotify-api');
+var spotify = new Spotify(keys.spotify);
+const axios = require('axios');
 
-// * You should then be able to access your keys information like so
 
-  var spotify = new Spotify(keys.spotify);
+var command = process.argv[2];
+var searchTerm = process.argv.slice(3).join(" ").trim();
 
-//   Make it so liri.js can take in one of the following commands:
-//    * `concert-this`
+console.log(command)
+console.log(searchTerm)
 
-//    * `spotify-this-song`
+spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+   
+   console.log(data); 
+  });
 
-//    * `movie-this`
-
-//    * `do-what-it-says`
+ 
+// Make a request for a user with a given ID
+axios.get("https://rest.bandsintown.com/artists/" + searchTerm + "/events?app_id=codingbootcamp")
+  .then(function (response) {
+    // handle success
+    console.log(response.data[0].venue.name);
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
